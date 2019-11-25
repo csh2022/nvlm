@@ -22,7 +22,9 @@ Operations::Operations() {
   }
 }
 
-nvlmResult_t Operations::GetRemotePciInfo(int index, unsigned int link, nvmlPciInfo_t &info) {
+nvlmResult_t Operations::GetRemotePciInfo(int index, 
+                                          unsigned int link, 
+                                          nvmlPciInfo_t &info) {
 
   NV_CHECK(nvmlDeviceGetHandleByIndex(index, &device));
   NV_CHECK(nvmlDeviceGetNvLinkRemotePciInfo(device, link, &info));
@@ -135,6 +137,69 @@ nvlmResult_t Operations::GetLinkBandwidth(void) {
   return NVLM_SUCCESS;
 }
 
+nvlmResult_t GetLinkSetBandwidth() {
+  float bw, max_dw = 0;
+  uint64_t ms0 = 0, ms1 = 1;
+  unsigned long long data_size = 0;
+  ofstream bw_file;
+
+  for (auto id : index_) {
+    NV_CHECK(nvmlDeviceGetHandleByIndex(id, &device));
+    for (auto link : link_) {
+      for (auto counter : counter_) {
+        NV_CHECK(nvmlDeviceSetNvLinkUtilizationControl(device, link, counter, &control_, NVLM_RESET));
+      }
+    }
+  }
+
+  vector<struct Link> link_set;
+  struct Link tmp_link;
+  for (int i = 0; i < link_.size(); i++) {
+    tmp_link.rank = link_[i];
+    link_set.push_back(tmp_link);
+  }
+
+  for (auto id : index_) {
+    NV_CHECK(nvmlDeviceGetHandleByIndex(id, &device));
+    for (auto counter : counter_) {
+      bw_file.open("../file/GPU"+to_string(id)+"_"+to_string(time(0))+".csv", ios::out);
+      bw_file << "time_stamp, bandwidth\n";
+      for (int i = 0; i < sample_num_; i++) {
+        ms1 = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+        for (auto& link : link_set) {
+          NV_CHECK(nvmlDeviceGetNvLinkUtilizationCounter(device, link, counter, &rx1, &tx1));
+          data_size += (link.rx1 - link.rx0) + (link.tx1 - link.tx0);
+          if (data_size != 0) {
+            // cout << "data_size: " << data_size << endl;
+          }
+          link.rx0 = link.rx1;
+          link.tx0 = link.tx1;
+        }
+        bw = (1.0f/((ms1-ms0)/1000.0f))*(data_size/1024.0f/1024.0f/1024.0f);
+        if (bw != 0) {
+            cout << "tmie stamp: " << ms1 << endl
+                 << "data_size:  " << data_size << "(Bytes)" << endl
+                 << "real-time bandwidth: " << bw << "(GB/s)" << endl
+                 << "----------------------------------------" << endl;
+            bw_file << ms1 << ","<< bw << "\n";
+        }
+        // if (bw > max_bw) {
+        //  max_bw = bw;
+        //  cout << "max_bw: " << max_bw << "  time_stamp: " << ms1 << endl;
+        //}
+
+        ms0 = ms1;
+        data_size = 0;
+
+        usleep(sample_interval_ * 1000);
+      }
+      bw_file.close();
+    }
+  }
+
+  return NVLM_SUCCESS;
+}
+
 nvlmResult_t Operations::GetNvlinkTopo() {
   NVLM_CHECK(FillTopoMatrix());
 
@@ -209,7 +274,8 @@ nvlmResult_t Operations::SetSampleInterval(const char* param) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::SetParams(vector<unsigned int> *vec, const string &param) {
+nvlmResult_t Operations::SetParams(vector<unsigned int> *vec, 
+                                   const string &param) {
   vec->clear();
   for (int i = 0; i < param.size(); i++) {
     vec->push_back(param[i] - '0');

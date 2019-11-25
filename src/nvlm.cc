@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
       { "counter",          required_argument, 0, 'c' },
       { "countercontrol",   required_argument, 0, 'k' },
       { "linkbandwidth",    no_argument,       0, 'b' },
+      { "linksetbandwidth", no_argument,       0, 'w' },
       // { "savepath",         required_argument, 0, 'p' },
       // { "fileformat",       required_argument, 0, 'f' },
       // { "resetcounter",     no_argument,       0, 'r' },
@@ -69,6 +70,9 @@ int main(int argc, char* argv[]) {
         break;
       case 'b':
         NVLM_CHECK(op.GetLinkBandwidth());
+        break;
+      case 'w':
+        NVLM_CHECK(op.GetLinkSetBandwidth());
         break;
       default:
         NVLM_CHECK(op.GetHelp());

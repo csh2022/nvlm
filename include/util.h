@@ -27,6 +27,14 @@ typedef enum {
   NVLM_WRONG_PARAMETER = 2
 } nvlmResult_t;
 
+struct Link {
+  int rank;
+  unsigned long long rx0 = 0;
+  unsigned long long rx1 = 0;
+  unsigned long long tx0 = 0;
+  unsigned long long tx1 = 0;
+};
+
 namespace nvlm {
 static nvmlDevice_t device;
 static char name[NVML_DEVICE_NAME_BUFFER_SIZE];
@@ -56,6 +64,8 @@ class Operations {
     nvlmResult_t GetNvlinkTopo();
 
     nvlmResult_t GetLinkBandwidth();
+    
+    nvlmResult_t GetLinkSetBandwidth();
 
     /**
      * @brief display current GPU utilization, each sample period may between 1
