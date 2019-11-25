@@ -14,8 +14,6 @@ Operations::Operations() {
 #endif
   NV_CHECK(nvmlInit());
   NV_CHECK(nvmlDeviceGetCount(&device_count_));
-  // index_ ={ 0, 1, 2, 3 };
-  // link_ = { 0, 1, 2, 3, 4, 5 };
   for (int i = 0; i < device_count_; ++i) {
     index_.push_back(i);
   }
@@ -110,8 +108,8 @@ nvlmResult_t Operations::GetLinkBandwidth(void) {
         for (int i = 0; i < sample_num_; i++) {
           ms1 = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
           NV_CHECK(nvmlDeviceGetNvLinkUtilizationCounter(device, link, counter, &rx1, &tx1));
-          bw = (1.0f/((ms1-ms0)/1000.0f))*(((rx1-rx0)+(tx1-tx0))/1024.0f/1024.0f /1024.0f);
-          //if (bw != 0) {
+          bw = (1.0f/((ms1-ms0)/1000.0f))*(((rx1-rx0)+(tx1-tx0))/1024.0f/1024.0f/1024.0f);
+          if (bw != 0) {
             cout << "tmie stamp: " << ms1 << endl
                  << "link: " << link << "  counter: " << counter << endl
                  << "rx1:  " << rx1 << "(Bytes)" << endl
@@ -119,7 +117,7 @@ nvlmResult_t Operations::GetLinkBandwidth(void) {
                  << "real-time bandwidth: " << bw << "(GB/s)" << endl
                  << "----------------------------------------" << endl;
             bw_file << ms1 << ","<< bw << "\n";
-          //}
+          }
 #ifdef DATABASE
           db.insertitem("test2", to_string(bw) + ',' + to_string(time(0)));
           // grafana only supports "second".
@@ -283,25 +281,25 @@ nvlmResult_t Operations::GetHelp() {
        << "-o,  --topo                 Get global nvlink topology.\n"
        << "-v,  --sampleinterval       Set sample interval, default is 1ms.\n"
        << "-n,  --samplenum            Set sample times, default is 10 times.\n"
-       //<< "-p,  --savepath             Set output file saving path\n"
-       //<< "-f,  --fileformat           Set output file format.\n"
+       // << "-p,  --savepath             Set output file saving path\n"
+       // << "-f,  --fileformat           Set output file format.\n"
        << "-u,  --utilization          Get utilization information, includeing"
        << " gpu utilization and memory utilization.\n"
-       //<< "-r,  --resetcounters        Reset link utilization counter for"
-       //<< "specified counter set (0 or 1).\n"
-       //<< "-e,  --errorcounters        Display error counters for a link.\n"
-       //<< "-ec, --crcerrorcounters     Display per-lane CRC error counters for"
-       //<< "a link.\n"
-       //<< "-re, --reseterrorcounters   Reset all error counters to zero.\n"
+       // << "-r,  --resetcounters        Reset link utilization counter for"
+       // << "specified counter set (0 or 1).\n"
+       // << "-e,  --errorcounters        Display error counters for a link.\n"
+       // << "-ec, --crcerrorcounters     Display per-lane CRC error counters for"
+       // << "a link.\n"
+       // << "-re, --reseterrorcounters   Reset all error counters to zero.\n"
        << "-b,  --linkbandwidth        Get real-tmie link bandwidth (GB/s).\n"
        << "-c,  --counterindex         Set counter index, default is 0.\n"
        << "-k,  --setcontrol           Set the utilization counters to count"
        << "specific NvLink transactions, default is \"bz\".\n"
        << "\t\t\t    The argument consists of an 2-character string representing"
        << "what is meant to be counted:\n"
-      //  << "\t\t\t    First character specifies the counter set:\n"
-      //  << "\t\t\t     0 = counter 0\n"
-      //  << "\t\t\t     1 = counter 1\n"
+       // << "\t\t\t    First character specifies the counter set:\n"
+       // << "\t\t\t     0 = counter 0\n"
+       // << "\t\t\t     1 = counter 1\n"
        << "\t\t\t    First character can be:\n"
        << "\t\t\t     c = count cycles\n"
        << "\t\t\t     p = count packets\n"
