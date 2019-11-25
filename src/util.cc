@@ -358,6 +358,7 @@ nvlmResult_t Operations::GetHelp() {
        // << "a link.\n"
        // << "-re, --reseterrorcounters   Reset all error counters to zero.\n"
        << "-b,  --linkbandwidth        Get real-tmie link bandwidth (GB/s).\n"
+       << "-w,  --linksetbandwidth     Get real-tmie link-set bandwidth (GB/s).\n"
        << "-c,  --counterindex         Set counter index, default is 0.\n"
        << "-k,  --setcontrol           Set the utilization counters to count"
        << "specific NvLink transactions, default is \"bz\".\n"
