@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/nvlm.dir/database.cc.o CMakeFiles/nvlm.dir/nvlm.cc.o CMakeFiles/nvlm.dir/util.cc.o  -o ../../bin/nvlm  -L/root/chenshanhui_DPF_1122_nvlm/lib -lnvidia-ml -Wl,-rpath,/root/chenshanhui_DPF_1122_nvlm/lib 
