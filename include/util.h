@@ -42,15 +42,11 @@ static int topo[MAX_DEVICE_COUNT][NVML_NVLINK_MAX_LINKS];
 
 class Operations {
   public:
-    Operations();
+    Operations(void);
 
-    ~Operations() {};
+    ~Operations(void) {};
 
-    nvlmResult_t GetLinkStatus();
-
-    // nvlmResult_t GetLinkUtilRates();
-
-    nvlmResult_t FillTopoMatrix();
+    nvlmResult_t GetLinkStatus(void);
 
     /**
      * @brief get global nvlink topology.
@@ -61,38 +57,40 @@ class Operations {
      * GPU[3]:  C0->G2  C1->G1  C2->G0  C3->G0  C4->G1  C5->G2
      *
      */
-    nvlmResult_t GetNvlinkTopo();
+    nvlmResult_t GetNvlinkTopo(void);
 
-    nvlmResult_t GetLinkBandwidth();
+    nvlmResult_t GetLinkBandwidth(void);
     
-    nvlmResult_t GetLinkSetBandwidth();
+    nvlmResult_t GetLinkSetBandwidth(void);
 
     /**
      * @brief display current GPU utilization, each sample period may between 1
      * second and 1/6 second, depending on the product being quired.
      */
-    nvlmResult_t GetGpuUtilRates();
+    nvlmResult_t GetGpuUtilRates(void);
 
     /**
      * @brief display help inforamtion.
      */
-    nvlmResult_t GetHelp();
+    nvlmResult_t GetHelp(void);
 
     nvlmResult_t GetRemotePciInfo(int index, unsigned int link, nvmlPciInfo_t &info);
 
     nvlmResult_t SetGpuIndex(const string &param);
 
-    nvlmResult_t SetLinkIndex(const string& param);
+    nvlmResult_t SetLinkIndex(const string &param);
 
-    nvlmResult_t SetCounterIndex(const string& param);
+    nvlmResult_t SetCounterIndex(const string &param);
 
-    nvlmResult_t SetSampleNum(const char* param);
+    nvlmResult_t SetSampleNum(const char *param);
 
-    nvlmResult_t SetSampleInterval(const char* param);
+    nvlmResult_t SetSampleInterval(const char *param);
 
     nvlmResult_t SetCounterControl(const string &param);
 
   private:
+    nvlmResult_t FillTopoMatrix(void);
+
     nvlmResult_t SetParams(vector<unsigned int> *vec, const string &param);
 
     nvlmResult_t SetParams(int *sample_num, const char *user_param);

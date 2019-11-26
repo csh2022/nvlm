@@ -2,7 +2,7 @@
 
 namespace nvlm {
 
-Operations::Operations() {
+Operations::Operations(void) {
   counter_ = { 0 };
   sample_num_ = 10;
   sample_interval_ = 1;
@@ -32,7 +32,7 @@ nvlmResult_t Operations::GetRemotePciInfo(int index,
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::FillTopoMatrix() {
+nvlmResult_t Operations::FillTopoMatrix(void) {
   nvmlPciInfo_t info[MAX_DEVICE_COUNT], tmp_info;
 
   for (int i = 0; i < device_count_; ++i) {
@@ -55,7 +55,7 @@ nvlmResult_t Operations::FillTopoMatrix() {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::GetGpuUtilRates() {
+nvlmResult_t Operations::GetGpuUtilRates(void) {
   nvmlUtilization_t utilization;
 
   for (int i = 0; i < sample_num_; i++) {
@@ -137,7 +137,7 @@ nvlmResult_t Operations::GetLinkBandwidth(void) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::GetLinkSetBandwidth() {
+nvlmResult_t Operations::GetLinkSetBandwidth(void) {
   float bw, max_dw = 0;
   uint64_t ms0 = 0, ms1 = 1;
   unsigned long long data_size = 0;
@@ -201,7 +201,7 @@ nvlmResult_t Operations::GetLinkSetBandwidth() {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::GetNvlinkTopo() {
+nvlmResult_t Operations::GetNvlinkTopo(void) {
   NVLM_CHECK(FillTopoMatrix());
 
   for (int i = 0; i < device_count_; i++) {
@@ -227,7 +227,7 @@ nvlmResult_t Operations::SetGpuIndex(const string& param) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::SetLinkIndex(const string& param) {
+nvlmResult_t Operations::SetLinkIndex(const string &param) {
   for (auto index : param) {
     if ((index - '0') >=  NVML_NVLINK_MAX_LINKS || (index - '0') < 0) {
       return NVLM_FAIL;
@@ -237,7 +237,7 @@ nvlmResult_t Operations::SetLinkIndex(const string& param) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::SetCounterIndex(const string& param) {
+nvlmResult_t Operations::SetCounterIndex(const string &param) {
   for (auto index : param) {
     if ((index - '0') > 1 || (index - '0') < 0) {
       return  NVLM_FAIL;
@@ -259,7 +259,7 @@ nvlmResult_t Operations::SetCounterControl(const string &param) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::SetSampleNum(const char* param) {
+nvlmResult_t Operations::SetSampleNum(const char *param) {
   if (atoi(param) < 0) {
     return NVLM_FAIL;
   }
@@ -267,7 +267,7 @@ nvlmResult_t Operations::SetSampleNum(const char* param) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::SetSampleInterval(const char* param) {
+nvlmResult_t Operations::SetSampleInterval(const char *param) {
   if (atoi(param) < 0) {
     return NVLM_FAIL;
   }
@@ -339,7 +339,7 @@ nvlmResult_t Operations::SetParams(const string &param) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t Operations::GetHelp() {
+nvlmResult_t Operations::GetHelp(void) {
   cout << "options: \n"
        << "-h,  --help                 Display help information.\n"
        << "-i,  --id                   Set GPU index, default is \"0123\".\n"
