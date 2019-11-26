@@ -167,7 +167,8 @@ nvlmResult_t GetLinkSetBandwidth() {
       for (int i = 0; i < sample_num_; i++) {
         ms1 = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
         for (auto& link : link_set) {
-          NV_CHECK(nvmlDeviceGetNvLinkUtilizationCounter(device, link, counter, &rx1, &tx1));
+          NV_CHECK(nvmlDeviceGetNvLinkUtilizationCounter(device, link.rank, counter, &link.rx1, &link.tx1));
+          
           data_size += (link.rx1 - link.rx0) + (link.tx1 - link.tx0);
           if (data_size != 0) {
             // cout << "data_size: " << data_size << endl;
