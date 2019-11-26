@@ -137,7 +137,7 @@ nvlmResult_t Operations::GetLinkBandwidth(void) {
   return NVLM_SUCCESS;
 }
 
-nvlmResult_t GetLinkSetBandwidth() {
+nvlmResult_t Operations::GetLinkSetBandwidth() {
   float bw, max_dw = 0;
   uint64_t ms0 = 0, ms1 = 1;
   unsigned long long data_size = 0;
